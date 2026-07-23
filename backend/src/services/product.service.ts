@@ -35,8 +35,14 @@ export const getProducts = async (filters: any) => {
     prisma.product.count({ where })
   ]);
 
+  // Convert Decimal price fields to numbers for JSON responses
+  const productsNormalized = products.map((p: any) => ({
+    ...p,
+    price: Number(p.price)
+  }));
+
   return {
-    products,
+    products: productsNormalized,
     pagination: {
       page: Number(page),
       totalPages: Math.ceil(total / limit),
@@ -46,14 +52,18 @@ export const getProducts = async (filters: any) => {
 };
 
 export const getProductById = async (id: string) => {
-  return prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
     include: { category: true }
   });
+
+  if (!product) return null;
+
+  return { ...product, price: Number((product as any).price) };
 };
 
 export const createProduct = async (data: any, imageUrl?: string) => {
-  return prisma.product.create({
+  const product = await prisma.product.create({
     data: {
       name: data.name,
       description: data.description,
@@ -64,6 +74,8 @@ export const createProduct = async (data: any, imageUrl?: string) => {
     },
     include: { category: true }
   });
+
+  return { ...product, price: Number((product as any).price) };
 };
 
 export const updateProduct = async (id: string, data: any, imageUrl?: string) => {
@@ -78,12 +90,13 @@ export const updateProduct = async (id: string, data: any, imageUrl?: string) =>
   if (imageUrl !== undefined) {
     updateData.imageUrl = imageUrl;
   }
-
-  return prisma.product.update({
+  const product = await prisma.product.update({
     where: { id },
     data: updateData,
     include: { category: true }
   });
+
+  return { ...product, price: Number((product as any).price) };
 };
 
 export const deleteProduct = async (id: string) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../../types';
-import { formatPrice, truncateText } from '../../utils/formatters';
+import { formatPrice, truncateText, getImageUrl } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
 
 interface ProductCardProps {
@@ -23,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
           {product.imageUrl ? (
             <img
-            src={`${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imageUrl}`}
+              src={getImageUrl(product.imageUrl)}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loading="lazy"

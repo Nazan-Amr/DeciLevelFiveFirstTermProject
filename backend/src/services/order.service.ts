@@ -67,7 +67,7 @@ export const createOrder = async (userId: string) => {
 export const getOrders = async (userId?: string) => {
   const where = userId ? { userId } : {};
   
-  return prisma.order.findMany({
+  const orders = await prisma.order.findMany({
     where,
     include: {
       user: true,
@@ -77,10 +77,21 @@ export const getOrders = async (userId?: string) => {
     },
     orderBy: { createdAt: 'desc' }
   });
+
+  // Normalize Decimal fields
+  return orders.map((o: any) => ({
+    ...o,
+    total: Number(o.total),
+    orderItems: o.orderItems.map((it: any) => ({
+      ...it,
+      price: Number(it.price),
+      product: { ...it.product, price: Number(it.product.price) }
+    }))
+  }));
 };
 
 export const getOrderById = async (id: string) => {
-  return prisma.order.findUnique({
+  const order = await prisma.order.findUnique({
     where: { id },
     include: {
       user: true,
@@ -89,10 +100,22 @@ export const getOrderById = async (id: string) => {
       }
     }
   });
+
+  if (!order) return null;
+
+  return {
+    ...order,
+    total: Number(order.total),
+    orderItems: order.orderItems.map((it: any) => ({
+      ...it,
+      price: Number(it.price),
+      product: { ...it.product, price: Number(it.product.price) }
+    }))
+  };
 };
 
 export const updateOrderStatus = async (id: string, status: OrderStatus) => {
-  return prisma.order.update({
+  const order = await prisma.order.update({
     where: { id },
     data: { status },
     include: {
@@ -102,4 +125,14 @@ export const updateOrderStatus = async (id: string, status: OrderStatus) => {
       }
     }
   });
+
+  return {
+    ...order,
+    total: Number(order.total),
+    orderItems: order.orderItems.map((it: any) => ({
+      ...it,
+      price: Number(it.price),
+      product: { ...it.product, price: Number(it.product.price) }
+    }))
+  };
 };

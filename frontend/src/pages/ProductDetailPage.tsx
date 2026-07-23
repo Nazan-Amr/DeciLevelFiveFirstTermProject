@@ -4,7 +4,7 @@ import { useProductStore } from '../stores/productStore';
 import { useCart } from '../hooks/useCart';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Button from '../components/ui/Button';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, getImageUrl } from '../utils/formatters';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
         <div className="bg-gray-100 rounded-xl overflow-hidden aspect-square">
           {currentProduct.imageUrl ? (
             <img
-            src={`${import.meta.env.VITE_API_URL?.replace('/api', '')}${currentProduct.imageUrl}`}
+            src={getImageUrl(currentProduct.imageUrl)}
               alt={currentProduct.name}
               className="w-full h-full object-cover"
             />

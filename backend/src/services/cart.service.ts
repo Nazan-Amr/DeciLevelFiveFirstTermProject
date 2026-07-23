@@ -15,8 +15,14 @@ export const getCart = async (userId: string) => {
     return sum + (Number(item.product.price) * item.quantity);
   }, 0);
 
+  // Normalize product price fields to numbers
+  const itemsNormalized = cartItems.map((ci: any) => ({
+    ...ci,
+    product: { ...ci.product, price: Number(ci.product.price) }
+  }));
+
   return {
-    items: cartItems,
+    items: itemsNormalized,
     total
   };
 };

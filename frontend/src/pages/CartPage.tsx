@@ -4,7 +4,7 @@ import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Button from '../components/ui/Button';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, getImageUrl } from '../utils/formatters';
 
 const CartPage: React.FC = () => {
   const { cart, isLoading, updateQuantity, removeItem } = useCart();
@@ -44,7 +44,7 @@ const CartPage: React.FC = () => {
             <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
               {item.product.imageUrl ? (
                 <img
-                src={`${import.meta.env.VITE_API_URL?.replace('/api', '')}${item.product.imageUrl}`}
+                src={getImageUrl(item.product.imageUrl)}
                   alt={item.product.name}
                   className="w-full h-full object-cover"
                 />

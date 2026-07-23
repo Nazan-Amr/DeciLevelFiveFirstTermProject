@@ -3,7 +3,7 @@ import * as cartService from '../services/cart.service';
 
 export const getCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cart = await cartService.getCart((req as any).user.userId);
+    const cart = await cartService.getCart((req as any).user.id);
     res.json({ success: true, data: cart });
   } catch (error) {
     next(error);
@@ -13,7 +13,7 @@ export const getCart = async (req: Request, res: Response, next: NextFunction) =
 export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productId, quantity } = req.body;
-    const item = await cartService.addToCart((req as any).user.userId, productId, quantity || 1);
+    const item = await cartService.addToCart((req as any).user.id, productId, quantity || 1);
     res.status(201).json({ success: true, data: item });
   } catch (error) {
     next(error);

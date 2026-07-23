@@ -8,7 +8,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { Category } from '../types';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, getImageUrl } from '../utils/formatters';
 
 const AdminProductsPage: React.FC = () => {
   const { isAdmin } = useAuth();
@@ -114,7 +114,7 @@ const AdminProductsPage: React.FC = () => {
                     <td className="py-3 px-4">
                       {product.imageUrl ? (
                         <img
-                        src={`${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imageUrl}`}
+                        src={getImageUrl(product.imageUrl)}
                           alt={product.name}
                           className="w-12 h-12 object-cover rounded-lg"
                         />
