@@ -1,71 +1,77 @@
 import { http, HttpResponse } from 'msw';
 
-const API_URL = 'http://localhost:3000/api';
-
 export const handlers = [
-  // Auth
-  http.post(`${API_URL}/auth/login`, () => {
+  http.get('/api/products', () => {
+    return HttpResponse.json({
+      success: true,
+      data: [],
+      pagination: { page: 1, totalPages: 1, total: 0 }
+    });
+  }),
+
+  http.get('/api/products/:id', () => {
     return HttpResponse.json({
       success: true,
       data: {
-        user: { id: '1', email: 'test@example.com', name: 'Test User', role: 'CUSTOMER' },
-        token: 'mock-token'
+        id: '1',
+        name: 'Test Product',
+        description: 'Test',
+        price: 99.99,
+        stock: 10,
+        imageUrl: null,
+        categoryId: '1',
+        category: { id: '1', name: 'Electronics', slug: 'electronics' }
       }
     });
   }),
 
-  http.get(`${API_URL}/auth/me`, () => {
-    return HttpResponse.json({
-      success: true,
-      data: { id: '1', email: 'test@example.com', name: 'Test User', role: 'CUSTOMER' }
-    });
-  }),
-
-  // Products
-  http.get(`${API_URL}/products`, () => {
+  http.post('/api/auth/register', () => {
     return HttpResponse.json({
       success: true,
       data: {
-        products: [
-          {
-            id: '1',
-            name: 'Test Product',
-            description: 'A test product',
-            price: 99.99,
-            stock: 10,
-            imageUrl: null,
-            categoryId: '1',
-            category: { id: '1', name: 'Test Category', slug: 'test' },
-            createdAt: '2024-01-01',
-            updatedAt: '2024-01-01'
-          }
-        ],
-        pagination: { page: 1, limit: 12, total: 1, totalPages: 1 }
+        user: { id: '1', email: 'test@test.com', name: 'Test', role: 'CUSTOMER' },
+        token: 'token'
       }
     });
   }),
 
-  // Categories
-  http.get(`${API_URL}/categories`, () => {
+  http.post('/api/auth/login', () => {
     return HttpResponse.json({
       success: true,
-      data: [{ id: '1', name: 'Test Category', slug: 'test', _count: { products: 1 } }]
+      data: {
+        user: { id: '1', email: 'test@test.com', name: 'Test', role: 'CUSTOMER' },
+        token: 'token'
+      }
     });
   }),
 
-  // Cart
-  http.get(`${API_URL}/cart`, () => {
+  http.get('/api/cart', () => {
     return HttpResponse.json({
       success: true,
       data: { items: [], total: 0 }
     });
   }),
 
-  // Orders
-  http.get(`${API_URL}/orders`, () => {
+  http.get('/api/categories', () => {
+    return HttpResponse.json({
+      success: true,
+      data: [
+        { id: '1', name: 'Electronics', slug: 'electronics', _count: { products: 5 } }
+      ]
+    });
+  }),
+
+  http.get('/api/orders', () => {
     return HttpResponse.json({
       success: true,
       data: []
+    });
+  }),
+
+  http.post('/api/orders', () => {
+    return HttpResponse.json({
+      success: true,
+      data: { id: 'order-1', status: 'PENDING', total: 99.99 }
     });
   })
 ];

@@ -1,99 +1,95 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create categories
-  const electronics = await prisma.category.create({
-    data: { name: 'Electronics', slug: 'electronics' }
+  // Upsert categories
+  const electronics = await prisma.category.upsert({
+    where: { slug: 'electronics' },
+    update: {},
+    create: { name: 'Electronics', slug: 'electronics' }
   });
 
-  const clothing = await prisma.category.create({
-    data: { name: 'Clothing', slug: 'clothing' }
+  const clothing = await prisma.category.upsert({
+    where: { slug: 'clothing' },
+    update: {},
+    create: { name: 'Clothing', slug: 'clothing' }
   });
 
-  const books = await prisma.category.create({
-    data: { name: 'Books', slug: 'books' }
+  const books = await prisma.category.upsert({
+    where: { slug: 'books' },
+    update: {},
+    create: { name: 'Books', slug: 'books' }
   });
 
-  // Create admin user
+  // Upsert admin
   const adminPassword = await bcrypt.hash('admin123', 10);
-  await prisma.user.create({
-    data: {
+  await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
       email: 'admin@example.com',
       name: 'Admin User',
       password: adminPassword,
-      role: Role.ADMIN
+      role: 'ADMIN'
     }
   });
 
-  // Create customer user
+  // Upsert customer
   const customerPassword = await bcrypt.hash('customer123', 10);
-  await prisma.user.create({
-    data: {
+  const customer = await prisma.user.upsert({
+    where: { email: 'customer@example.com' },
+    update: {},
+    create: {
       email: 'customer@example.com',
       name: 'Customer User',
       password: customerPassword,
-      role: Role.CUSTOMER
+      role: 'CUSTOMER'
     }
   });
 
-  // Create products
-  await prisma.product.createMany({
-    data: [
-      {
-        name: 'Wireless Headphones',
-        description: 'High-quality wireless headphones with noise cancellation',
-        price: 99.99,
-        stock: 50,
-        imageUrl: '/uploads/headphones.jpg',
-        categoryId: electronics.id
-      },
-      {
-        name: 'Smart Watch',
-        description: 'Feature-rich smartwatch with health tracking',
-        price: 199.99,
-        stock: 30,
-        imageUrl: '/uploads/smartwatch.jpg',
-        categoryId: electronics.id
-      },
-      {
-        name: 'Cotton T-Shirt',
-        description: 'Comfortable 100% cotton t-shirt',
-        price: 24.99,
-        stock: 100,
-        imageUrl: '/uploads/tshirt.jpg',
-        categoryId: clothing.id
-      },
-      {
-        name: 'Denim Jeans',
-        description: 'Classic fit denim jeans',
-        price: 59.99,
-        stock: 75,
-        imageUrl: '/uploads/jeans.jpg',
-        categoryId: clothing.id
-      },
-      {
-        name: 'JavaScript Guide',
-        description: 'Complete guide to modern JavaScript',
-        price: 39.99,
-        stock: 40,
-        imageUrl: '/uploads/jsbook.jpg',
-        categoryId: books.id
-      },
-      {
-        name: 'React Patterns',
-        description: 'Advanced React design patterns',
-        price: 44.99,
-        stock: 25,
-        imageUrl: '/uploads/reactbook.jpg',
-        categoryId: books.id
-      }
-    ]
+  // Upsert sample products
+  await prisma.product.upsert({
+    where: { id: 'prod-1' },
+    update: {},
+    create: {
+      id: 'prod-1',
+      name: 'Wireless Headphones',
+      description: 'High-quality wireless headphones with noise cancellation',
+      price: 99.99,
+      stock: 50,
+      categoryId: electronics.id
+    }
   });
 
-  console.log('Database seeded successfully!');
+  await prisma.product.upsert({
+    where: { id: 'prod-2' },
+    update: {},
+    create: {
+      id: 'prod-2',
+      name: 'Cotton T-Shirt',
+      description: 'Comfortable 100% cotton t-shirt',
+      price: 29.99,
+      stock: 100,
+      categoryId: clothing.id
+    }
+  });
+
+  await prisma.product.upsert({
+    where: { id: 'prod-3' },
+    update: {},
+    create: {
+      id: 'prod-3',
+      name: 'JavaScript Guide',
+      description: 'Complete guide to modern JavaScript',
+      price: 49.99,
+      stock: 30,
+      categoryId: books.id
+    }
+  });
+
+  console.log('✅ Seed completed successfully');
 }
 
 main()

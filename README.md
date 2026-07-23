@@ -26,38 +26,12 @@ A complete full-stack e-commerce application built with React, Express, PostgreS
 ## How to Run
 
 ### Option 1: Docker (Recommended)
+
 ```bash
+# Clone and navigate to project
+cd ecommerce-platform
+
+# Start all services
 docker-compose up --build
 
-
-# 1. Create uploads directory
-mkdir -p uploads
-
-# 2. Copy env files
-cp .env.example backend/.env
-cp .env.example frontend/.env
-
-# 3. Install backend dependencies
-cd backend && npm install
-
-# 4. Generate Prisma client
-npx prisma generate
-
-# 5. Run migrations
-npx prisma migrate dev --name init
-
-# 6. Seed database
-npx prisma db seed
-
-# 7. Install frontend dependencies
-cd ../frontend && npm install
-
-# 8. Run tests (backend)
-cd ../backend && npm test
-
-# 9. Run tests (frontend)
-cd ../frontend && npm test
-
-# 10. Start with Docker (optional)
-cd ..
-docker-compose up --build
+# Access the app at http://localhost:5173

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { register, login, getMe, googleCallback } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth.middleware';
+import { validate } from '../middleware/validate.middleware';
 import passport from 'passport';
 
 const router = Router();
@@ -9,12 +10,14 @@ const router = Router();
 router.post('/register', [
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }),
-  body('name').trim().notEmpty()
+  body('name').trim().notEmpty(),
+  validate
 ], register);
 
 router.post('/login', [
   body('email').isEmail().normalizeEmail(),
-  body('password').notEmpty()
+  body('password').notEmpty(),
+  validate
 ], login);
 
 router.get('/me', authenticate, getMe);

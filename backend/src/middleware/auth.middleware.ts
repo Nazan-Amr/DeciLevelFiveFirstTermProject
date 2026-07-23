@@ -10,7 +10,8 @@ export const authorize = (...roles: Role[]) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    if (!roles.includes(req.user.role)) {
+    const user = req.user as { role: Role };
+    if (!roles.includes(user.role)) {
       return res.status(403).json({ message: 'Forbidden - Insufficient permissions' });
     }
 

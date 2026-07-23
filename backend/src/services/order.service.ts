@@ -1,4 +1,5 @@
 import prisma from '../config/database';
+import { OrderStatus } from '@prisma/client';
 
 export const createOrder = async (userId: string) => {
   return await prisma.$transaction(async (tx) => {
@@ -90,7 +91,7 @@ export const getOrderById = async (id: string) => {
   });
 };
 
-export const updateOrderStatus = async (id: string, status: string) => {
+export const updateOrderStatus = async (id: string, status: OrderStatus) => {
   return prisma.order.update({
     where: { id },
     data: { status },

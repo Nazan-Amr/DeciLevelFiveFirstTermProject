@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { getProducts, getProduct, createProduct, updateProduct, deleteProduct } from '../controllers/product.controller';
 import { authenticate, authorize } from '../middleware/auth.middleware';
-import upload from '../middleware/upload.middleware';
+import { upload } from '../middleware/upload.middleware';
+import { validate } from '../middleware/validate.middleware';
 
 const router = Router();
 
@@ -13,7 +14,8 @@ router.post('/', authenticate, authorize('ADMIN'), upload.single('image'), [
   body('description').trim().notEmpty(),
   body('price').isFloat({ min: 0 }),
   body('stock').isInt({ min: 0 }),
-  body('categoryId').notEmpty()
+  body('categoryId').notEmpty(),
+  validate
 ], createProduct);
 router.put('/:id', authenticate, authorize('ADMIN'), upload.single('image'), updateProduct);
 router.delete('/:id', authenticate, authorize('ADMIN'), deleteProduct);
