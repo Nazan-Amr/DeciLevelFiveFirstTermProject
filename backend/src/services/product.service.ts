@@ -1,7 +1,30 @@
 import prisma from '../config/database';
 
+const normalizePrice = (value: unknown) => {
+  if (value === null || value === undefined || value === '') return value;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : value;
+};
+
+const normalizeProduct = (product: any) => {
+  if (!product || !('price' in product)) return product;
+  return { ...product, price: normalizePrice(product.price) };
+};
+
 export const getProducts = async (filters: any) => {
-  const { search, category, minPrice, maxPrice, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 12 } = filters;
+  const {
+    search,
+    category,
+    minPrice,
+    maxPrice,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    page = 1,
+    limit = 12
+  } = filters;
+
+  const pageNumber = Number(page) || 1;
+  const takeNumber = Number(limit) || 12;
   
   const where: any = {};
   
@@ -22,7 +45,7 @@ export const getProducts = async (filters: any) => {
     if (maxPrice) where.price.lte = parseFloat(maxPrice);
   }
 
-  const skip = (page - 1) * limit;
+  const skip = (pageNumber - 1) * takeNumber;
   
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -30,16 +53,13 @@ export const getProducts = async (filters: any) => {
       include: { category: true },
       orderBy: { [sortBy]: sortOrder },
       skip,
-      take: limit
+      take: takeNumber
     }),
     prisma.product.count({ where })
   ]);
 
   // Convert Decimal price fields to numbers for JSON responses
-  const productsNormalized = products.map((p: any) => ({
-    ...p,
-    price: Number(p.price)
-  }));
+  const productsNormalized = products.map((p: any) => normalizeProduct(p));
 
   return {
     products: productsNormalized,
@@ -59,7 +79,7 @@ export const getProductById = async (id: string) => {
 
   if (!product) return null;
 
-  return { ...product, price: Number((product as any).price) };
+  return normalizeProduct(product);
 };
 
 export const createProduct = async (data: any, imageUrl?: string) => {
@@ -75,7 +95,7 @@ export const createProduct = async (data: any, imageUrl?: string) => {
     include: { category: true }
   });
 
-  return { ...product, price: Number((product as any).price) };
+  return normalizeProduct(product);
 };
 
 export const updateProduct = async (id: string, data: any, imageUrl?: string) => {
@@ -96,7 +116,7 @@ export const updateProduct = async (id: string, data: any, imageUrl?: string) =>
     include: { category: true }
   });
 
-  return { ...product, price: Number((product as any).price) };
+  return normalizeProduct(product);
 };
 
 export const deleteProduct = async (id: string) => {

@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getUsers, getUserStats } from '../api/user.api';
+import { getUserStats } from '../api/user.api';
 import { getOrders } from '../api/order.api';
-import { getProducts } from '../api/product.api';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { formatPrice } from '../utils/formatters';
 
 const AdminDashboardPage: React.FC = () => {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState<any>(null);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);

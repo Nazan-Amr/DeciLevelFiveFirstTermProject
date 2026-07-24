@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ui/ProductCard';
@@ -9,7 +9,7 @@ import { Category } from '../types';
 
 const ProductListPage: React.FC = () => {
   const { products, pagination, isLoading, filters, setFilters } = useProducts();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchInput, setSearchInput] = useState(filters.search || '');
 

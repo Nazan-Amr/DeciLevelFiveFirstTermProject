@@ -1,6 +1,9 @@
-import '@testing-library/jest-dom';
-import { server } from './mocks/server';
+import { cleanup } from '@testing-library/react';
+import { afterEach, expect, vi } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/matchers';
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+expect.extend(matchers);
+
+Object.defineProperty(global, 'vi', { value: vi });
+
+afterEach(() => cleanup());

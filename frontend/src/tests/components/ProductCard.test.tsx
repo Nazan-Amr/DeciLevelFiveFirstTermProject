@@ -1,5 +1,6 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import ProductCard from '../../components/ui/ProductCard';
 import { Product } from '../../types';
@@ -12,7 +13,7 @@ const mockProduct: Product = {
   stock: 10,
   imageUrl: null,
   categoryId: '1',
-  category: { id: '1', name: 'Electronics', slug: 'electronics' },
+  category: { id: '1', name: 'Electronics', slug: 'electronics', createdAt: '2024-01-01' },
   createdAt: '2024-01-01',
   updatedAt: '2024-01-01'
 };
